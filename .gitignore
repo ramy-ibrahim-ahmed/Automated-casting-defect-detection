@@ -7,9 +7,9 @@ __pycache__/
 *.so
 
 # Mine
-He_Deep_Residual_Learning_CVPR_2016_paper.pdf
-kaggle.ipynb
 data
+best_model.pth
+Deep_Residual_Learning.pdf
 
 # Distribution / packaging
 .Python
