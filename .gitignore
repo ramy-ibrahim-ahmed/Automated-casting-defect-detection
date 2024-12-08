@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+# Mine
+He_Deep_Residual_Learning_CVPR_2016_paper.pdf
+kaggle.ipynb
+data
+
 # Distribution / packaging
 .Python
 build/
