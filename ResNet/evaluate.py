@@ -17,7 +17,6 @@ def evaluate(
     device,
     threshold: float = 0.5,
     trial_dir=None,
-    confusion_only=False,
     save=True,
 ):
     # Initialize variables for accuracy calculation and storing labels
@@ -64,8 +63,14 @@ def evaluate(
     # Compute confusion matrix
     cm = confusion_matrix(all_labels, all_preds)
 
-    # Plot confusion matrix using seaborn
-    plt.figure(figsize=(6, 6))
+    # Compute ROC curve and AUC
+    fpr, tpr, _ = roc_curve(all_labels, all_probs)
+    roc_auc = auc(fpr, tpr)
+
+    # Create a single figure with subplots
+    _, axes = plt.subplots(1, 2, figsize=(10, 4))
+
+    # Plot confusion matrix
     sns.heatmap(
         cm,
         annot=True,
@@ -73,25 +78,24 @@ def evaluate(
         cbar=False,
         xticklabels=["Ok", "Defective"],
         yticklabels=["Ok", "Defective"],
+        ax=axes[0],
+        linewidths=0.5,
     )
-    plt.xlabel("Predicted")
-    plt.ylabel("True")
+    axes[0].set_title("Confusion Matrix")
+    axes[0].set_xlabel("Predicted")
+    axes[0].set_ylabel("True")
+
+    # Plot ROC curve
+    axes[1].plot(fpr, tpr, color="black", label=f"ROC Curve (AUC = {roc_auc:.4f})")
+    axes[1].plot([0, 1], [0, 1], color="gray", linestyle="--")
+    axes[1].set_title("ROC Curve")
+    axes[1].set_xlabel("False Positive Rate")
+    axes[1].set_ylabel("True Positive Rate")
+    axes[1].legend(loc="lower right")
+    axes[1].grid(True, lw=0.5, linestyle="--")
+
+    # Adjust layout and save the figure
+    plt.tight_layout()
     if save:
-        plt.savefig(f"{trial_dir}/confusion_plot_th={threshold}.png")
+        plt.savefig(f"{trial_dir}/roc_and_confusion_th={threshold}.png")
     plt.show()
-
-    # Compute and plot ROC curve
-    if not confusion_only:
-        fpr, tpr, _ = roc_curve(all_labels, all_probs)
-        roc_auc = auc(fpr, tpr)
-
-        plt.figure(figsize=(8, 6))
-        plt.plot(fpr, tpr, color="blue", label=f"ROC Curve (AUC = {roc_auc:.4f})")
-        plt.plot([0, 1], [0, 1], color="gray", linestyle="--")
-        plt.xlabel("False Positive Rate")
-        plt.ylabel("True Positive Rate")
-        plt.legend(loc="lower right")
-        plt.grid(True, lw=0.5, linestyle="--")
-        if save:
-            plt.savefig(f"{trial_dir}/roc_plot_th={threshold}.png")
-        plt.show()
