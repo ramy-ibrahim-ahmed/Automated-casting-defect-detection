@@ -8,8 +8,8 @@ __pycache__/
 
 # Mine
 data
-best_model.pth
-Deep_Residual_Learning.pdf
+papers
+*.pth
 
 # Distribution / packaging
 .Python
