@@ -5,6 +5,11 @@ from torchvision import datasets, transforms
 from torch.utils.data import DataLoader, SubsetRandomSampler
 
 
+# Custom target_transform to switch labels 0 and 1
+def label_switch(target):
+    return 1 - target
+
+
 # Calculate mean and standard deviation of a dataset
 def calculate_mean_std(dataset):
     loader = DataLoader(dataset, batch_size=64, shuffle=False, num_workers=2)
@@ -21,6 +26,7 @@ def calculate_mean_std(dataset):
 
     mean /= num_samples
     std /= num_samples
+    mean.tolist(), std.tolist()
     return mean.tolist(), std.tolist()
 
 
@@ -35,20 +41,23 @@ def data_loader(
     num_workers=4,
     pin_memory=True,
     prefetch_factor=2,
+    img_shape=(224, 224),
 ):
     # Define base transform (no normalization yet)
     base_transform = transforms.Compose(
         [
-            transforms.Resize((224, 224)),
+            transforms.Resize(img_shape),
             transforms.ToTensor(),
         ]
     )
 
     # Load the dataset (train or test based on `test` flag)
     dataset_path = "test" if test else "train"
+
     dataset = datasets.ImageFolder(
         root=os.path.join(data_dir, dataset_path),
         transform=base_transform,
+        target_transform=label_switch,
     )
 
     # Compute mean and std for the dataset

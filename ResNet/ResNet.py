@@ -1,9 +1,9 @@
 import torch.nn as nn
 
 
-class ResidualBlock(nn.Module):
+class Block(nn.Module):
     def __init__(self, in_channels, out_channels, stride=1, downsample=None):
-        super(ResidualBlock, self).__init__()
+        super(Block, self).__init__()
         self.conv1 = nn.Sequential(
             nn.Conv2d(
                 in_channels,
@@ -41,13 +41,14 @@ class ResNet(nn.Module):
     def __init__(
         self,
         layers,
+        image_channle=3,
         out_neurons=1,
-        block=ResidualBlock,
+        block=Block,
     ):
         super(ResNet, self).__init__()
         self.inplanes = 64
         self.conv1 = nn.Sequential(
-            nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3),
+            nn.Conv2d(image_channle, 64, kernel_size=7, stride=2, padding=3),
             nn.BatchNorm2d(64),
             nn.ReLU(),
         )
@@ -90,3 +91,19 @@ class ResNet(nn.Module):
         x = self.fc(x)
 
         return x
+
+
+def ResNet18(out_neurons: int, img_channels: int = 3):
+    return ResNet(
+        layers=[2, 2, 2, 2],
+        out_neurons=out_neurons,
+        image_channle=img_channels,
+    )
+
+
+def ResNet34(out_neurons: int, img_channels: int = 3):
+    return ResNet(
+        layers=[3, 4, 6, 3],
+        out_neurons=out_neurons,
+        image_channle=img_channels,
+    )
