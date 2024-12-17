@@ -18,12 +18,6 @@ This project aims to revolutionize the casting manufacturing industry by automat
 
 ---
 
-## Receiver Operating Characteristic (ROC) Curve with threshold=0.1
+## Receiver Operating Characteristic (ROC) Curve and Confusion Matrix with threshold=0.1
 
-![image 3](results/ResNet-18/threshold/roc_plot_th=0.1.png)
-
----
-
-## Confusion Matrix with threshold=0.1
-
-![image 4](results/ResNet-18/threshold/confusion_plot_th=0.1.png)
+![image 3](results/ResNet-18/threshold/roc_and_confusion_th=0.1.png)
