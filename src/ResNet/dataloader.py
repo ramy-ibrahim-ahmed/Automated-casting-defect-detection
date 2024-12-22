@@ -123,4 +123,4 @@ def data_loader(
         prefetch_factor=prefetch_factor,
     )
 
-    return train_loader, valid_loader
+    return train_loader, valid_loader, mean, std
