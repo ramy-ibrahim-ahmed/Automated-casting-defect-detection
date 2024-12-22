@@ -1,8 +1,10 @@
 torch==2.5.1
 matplotlib==3.9.3
-opencv-python==4.10.0.84
 torchvision==0.20.1
 torchsummary==1.5.1
 scikit-learn==1.5.2
 tqdm==4.67.1
 seaborn==0.13.2
+tensorflow==2.18.0
+fastapi==0.115.6
+uvicorn==0.34.0
