@@ -16,6 +16,12 @@ def data_loader(train_dir, test_dir, batch_size, img_shape):
         image_size=img_shape,
     )
 
+    def swap_labels(image, label):
+        return image, 1 - label
+
+    train_data = train_data.map(swap_labels)
+    val_data = val_data.map(swap_labels)
+
     val_batches = tf.data.experimental.cardinality(val_data)
     test_data = val_data.take(val_batches // 2)
     val_data = val_data.skip(val_batches // 2)
