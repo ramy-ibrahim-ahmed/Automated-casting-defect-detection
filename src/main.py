@@ -1,8 +1,86 @@
-from fastapi import FastAPI
+from PIL import Image
 
-app = FastAPI()
+from fastapi import FastAPI, UploadFile, File, HTTPException, status
+from fastapi.responses import JSONResponse
+
+import torch
+from ResNet.ResNet import ResNet18
+from ResNet.DeepResNet import ResNet50
+from helpers import predict_resnet
+
+app = FastAPI(
+    title="🛠️🔍 Automated Casting Defect Detection API",
+    description=(
+        "* An API designed to automate quality inspection of casting products using deep learning.\n"
+        "* The system classifies images of submersible pump impellers as either **Defective** or **Ok** based on custom-trained models: ResNet-18, ResNet-50, and a fine-tuned Inception V3.\n"
+        "* This solution improves manufacturing efficiency by reducing manual inspection errors and identifying defects like blowholes, shrinkage, and metallurgical irregularities."
+    ),
+    version="1.0.0",
+    contact={
+        "name": "Ramy Ibrahim",
+        "url": "https://github.com/ramy-ibrahim-ahmed/Automated-Casting-Defect-Detection-with-ResNet",
+        "email": "ramyibrahim987@gmail.com",
+    },
+    license_info={
+        "name": "MIT License",
+        "url": "https://opensource.org/licenses/MIT",
+    },
+)
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+resnet18 = ResNet18(out_neurons=1).to(device)
+resnet18.load_state_dict(
+    torch.load(
+        r"..\results\ResNet-18\best_net.pth",
+        map_location=device,
+        weights_only=True,
+    )
+)
+resnet18.eval()
+
+resnet50 = ResNet50(out_neurons=1).to(device)
+resnet50.load_state_dict(
+    torch.load(
+        r"..\results\ResNet-50\best_net.pth",
+        map_location=device,
+        weights_only=True,
+    )
+)
+resnet50.eval()
+
+
+@app.post("/resnet-18/")
+async def predict_image(file: UploadFile = File(...)):
+    try:
+        if not file.content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="File must be an image.")
+
+        image = Image.open(file.file).convert("RGB")
+        label, confidence = predict_resnet(model=resnet18, image=image, device=device)
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"label": label, "confidence": f"{confidence:.2f}%"},
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/resnet-50/")
+async def predict_image(file: UploadFile = File(...)):
+    try:
+        if not file.content_type.startswith("image/"):
+            raise HTTPException(status_code=400, detail="File must be an image.")
+
+        image = Image.open(file.file).convert("RGB")
+        label, confidence = predict_resnet(model=resnet50, image=image, device=device)
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content={"label": label, "confidence": f"{confidence:.2f}%"},
+        )
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
