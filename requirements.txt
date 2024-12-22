@@ -8,3 +8,4 @@ seaborn==0.13.2
 tensorflow==2.18.0
 fastapi==0.115.6
 uvicorn==0.34.0
+python-multipart==0.0.20
