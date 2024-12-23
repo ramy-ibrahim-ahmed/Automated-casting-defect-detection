@@ -11,6 +11,6 @@ COPY ./src ./src
 RUN useradd -m myuser
 USER myuser
 
-EXPOSE 8000
+EXPOSE 4000
 
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "4000", "--reload"]
