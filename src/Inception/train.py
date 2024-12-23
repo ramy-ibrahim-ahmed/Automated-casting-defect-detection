@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+@tf.keras.utils.register_keras_serializable()
 class F1Score(tf.keras.metrics.Metric):
     def __init__(self, name="f1_score", **kwargs):
         super(F1Score, self).__init__(name=name, **kwargs)
@@ -34,6 +35,7 @@ def train(
     loss,
     epochs,
     accuracy_metric,
+    class_weights_dict,
     trial_dir=None,
     patience=None,
     initial_epoch=None,
@@ -56,6 +58,7 @@ def train(
             validation_data=val_data,
             epochs=epochs,
             verbose=verbose,
+            class_weight=class_weights_dict,
         )
     else:
         if not os.path.exists(trial_dir):
@@ -85,6 +88,7 @@ def train(
             initial_epoch=initial_epoch,
             callbacks=[early_stopping, check_points],
             verbose=verbose,
+            class_weight=class_weights_dict,
         )
 
         epochs = range(1, len(history.history["loss"]) + 1)

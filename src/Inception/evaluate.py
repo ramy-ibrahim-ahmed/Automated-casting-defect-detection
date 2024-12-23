@@ -5,7 +5,7 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix, roc_curve, auc
 
 
-def evaluate(model, data, threshold, trial_dir, save=True):
+def evaluate(model, data, threshold, trial_dir=None, save=True):
     results = model.evaluate(data, verbose=0)
     loss, accuracy, precision, recall, f1_score = results
     print(f"Loss: {loss:.4f}")
