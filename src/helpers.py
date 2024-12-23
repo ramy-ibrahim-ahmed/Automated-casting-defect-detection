@@ -1,3 +1,4 @@
+import numpy as np
 import torch
 from torchvision import transforms
 
@@ -26,3 +27,16 @@ def predict_resnet(model, image, device="cpu", img_shape=(224, 224), threshold=0
         return "Defective", round(float(probabilities[0][0]), 2) * 100
 
     return "OK", round(1 - float(probabilities[0][0]), 2) * 100
+
+
+def predict_inception(model, image, img_shape=(299, 299), threshold=0.1):
+    image = image.resize(img_shape)
+    image_array = np.expand_dims(np.array(image), axis=0)
+
+    probability = model.predict(image_array, verbose=0)
+    probability = float(probability[0][0])
+
+    predicted = int(probability > threshold)
+    if predicted == 1:
+        return "Defective", round(probability, 2) * 100
+    return "OK", round(1 - probability, 2) * 100
