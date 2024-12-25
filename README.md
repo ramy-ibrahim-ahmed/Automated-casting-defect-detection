@@ -1,4 +1,4 @@
-# Automated Casting Defect Detection
+# 🔍Automated Casting Defect Detection
 
 This initiative seeks to transform the casting manufacturing industry by automating the defect detection process. Traditionally, this task relies on manual inspection, which is not only time-consuming and labor-intensive but also susceptible to human error. To overcome these limitations, I have developed and implemented a deep learning-based solution using state-of-the-art architectures: ResNet-18, ResNet-50, and a fine-tuned Inception V3 model.
 
